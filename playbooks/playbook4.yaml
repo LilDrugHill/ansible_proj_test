@@ -1,4 +1,4 @@
-- hosts: appservers
+- hosts: '{{ servers }}'
   vars:
     nginx_port: 8070
     root_dir: /usr/share/nginx/html
@@ -11,7 +11,7 @@
       become: yes
     
     - name: copy html file
-      copy:
+      template:
         src: /Users/lildrugdgugstyle/Ansible_proj/files/index.html
         dest: '{{root_dir}}/index.html'
       become: yes
