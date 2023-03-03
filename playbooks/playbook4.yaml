@@ -1,4 +1,7 @@
 - hosts: appservers
+  vars:
+    nginx_port: 8070
+    root_dir: /usr/share/nginx/html
   tasks:
     - name: install nginx
       apt:
@@ -10,11 +13,11 @@
     - name: copy html file
       copy:
         src: /Users/lildrugdgugstyle/Ansible_proj/files/index.html
-        dest: /usr/share/nginx/html/index.html
+        dest: '{{root_dir}}/index.html'
       become: yes
 
     - name: copy nginx conf
-      copy:
+      template:
         src: /Users/lildrugdgugstyle/Ansible_proj/files/nginx.conf
         dest: /etc/nginx/nginx.conf
       become: yes
