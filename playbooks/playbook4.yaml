@@ -1,0 +1,29 @@
+- hosts: appservers
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      become: yes
+    
+    - name: copy html file
+      copy:
+        src: /Users/lildrugdgugstyle/Ansible_proj/files/index.html
+        dest: /usr/share/nginx/html/index.html
+      become: yes
+
+    - name: copy nginx conf
+      copy:
+        src: /Users/lildrugdgugstyle/Ansible_proj/files/nginx.conf
+        dest: /etc/nginx/nginx.conf
+      become: yes
+      notify:
+        - restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: reloaded
+      become: yes
