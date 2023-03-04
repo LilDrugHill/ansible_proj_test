@@ -1,24 +1,37 @@
 - hosts: '{{ servers }}'
+  gather_facts: yes
   vars:
-    nginx_port: 8070
+    nginx_port: 80
     root_dir: /usr/share/nginx/html
+    sentance: 'This is server {{ ansible_hostname }}!'
   tasks:
-    - name: install nginx
+    - name: install nginx CentOs
+      command: sudo yum -y install {{item}}
+      when: ansible_distribution == 'CentOS'
+      loop:
+        - nginx
+      become: yes
+      
+
+
+    - name: install nginx Ubuntu
       apt:
         name: nginx
         state: present
         update_cache: yes
+      when: ansible_os_family == "Debian"
       become: yes
-    
+      
+      
     - name: copy html file
       template:
-        src: /Users/lildrugdgugstyle/Ansible_proj/files/index.html
+        src: '{{files_path}}/index.html'
         dest: '{{root_dir}}/index.html'
       become: yes
 
     - name: copy nginx conf
       template:
-        src: /Users/lildrugdgugstyle/Ansible_proj/files/nginx.conf
+        src: '{{files_path}}/nginx.conf'
         dest: /etc/nginx/nginx.conf
       become: yes
       notify:

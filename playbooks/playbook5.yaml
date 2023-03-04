@@ -1,0 +1,32 @@
+- hosts: servers
+  gather_facts: no
+  tasks:
+    - name: create users
+      user:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - sansa
+        - jaime
+        - robert
+      become: yes
+
+    - name: copy git configs for users
+      template:
+        src: '{{files_path}}/.gitconfig'
+        dest: /home/{{ item }}/
+      loop:
+        - sansa
+        - jaime
+        - robert
+      become: yes
+
+    - name: add ssh
+      copy:
+        src: '{{files_path}}/authorized_keys'
+        dest: /home/{{item}}/.ssh/
+      loop:
+        - sansa
+        - jaime
+        - robert
+      become_user: '{{item}}'
